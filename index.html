@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spinning Ball Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
+      margin-top: 32px;
+    }
+
+    .ball-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      cursor: pointer;
+    }
+
+    .ball-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .blade-img {
+      width: 65px;
+      height: 50px;
+      position: absolute;
+      top: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+
+    .spinning {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .result-message {
+      position: absolute;
+      top: 110%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background-color: white;
+      border: 2px solid;
+      display: none;
+    }
+
+    .winner {
+      color: white;
+      border-color: white;
+    }
+
+    .try-again {
+      color: red;
+      border-color: red;
+    }
+
+    .hide {
+      display: none;
+    }
+
+    #resetBtn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #resetBtn:hover {
+      background-color: #004c99;
+    }
+
+    #fireworks {
+      display: none;
+      font-size: 24px;
+      color: gold;
+      animation: pop 1s ease-in-out infinite;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    #bigWin {
+      font-size: 32px;
+      font-weight: bold;
+      color: green;
+      margin-top: 20px;
+      display: none;
+    }
+
+    #bladeBox {
+      margin-top: 15px;
+      display: none;
+    }
+
+    #bladeBox img {
+      width: 100px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Spin a RAZABALL and Win!</h1>
+  <button id="resetBtn">Reset</button>
+  <div style="height:15px;"></div>
+
+  <div class="container">
+   
+    <!-- Golf -->
+    <div class="ball-container">
+      <img class="ball-img" src="Golfball2.jpg" alt="Golf Ball">
+      <img class="blade-img" src="razarblade3.png" alt="Blade">
+      <div class="result-message"></div>
+    </div>
+
+    <!-- Tennis -->
+    <div class="ball-container">
+      <img class="ball-img" src="Tennis_ball.png" alt="Tennis Ball">
+      <img class="blade-img" src="razarblade3.png" alt="Blade">
+      <div class="result-message"></div>
+    </div>
+
+    <!-- Soccer -->
+    <div class="ball-container">
+      <img class="ball-img" src="Soccer_ball.png" alt="Soccer Ball">
+      <img class="blade-img" src="razarblade3.png" alt="Blade">
+      <div class="result-message"></div>
+    </div>
+
+    <!-- Basketball -->
+    <div class="ball-container">
+      <img class="ball-img" src="200px-Basketball.png" alt="Basketball">
+      <img class="blade-img" src="razarblade3.png" alt="Blade">
+      <div class="result-message"></div>
+    </div>
+
+    <!-- Cricket -->
+    <div class="ball-container">
+      <img class="ball-img" src="Cricketball2.jpg" alt="Cricket Ball">
+      <img class="blade-img" src="razarblade3.png" alt="Blade">
+      <div class="result-message"></div>
+    </div>
+  </div>
+
+  <div id="fireworks">🎆 🎇 🎆</div>
+  <div id="bigWin">🎉 YOU WIN! 🎉</div>
+  <div id="bladeBox">
+    <img src="BladeBox1.png" alt="Blade Box">
+  </div>
+
+  <script>
+    const containers = document.querySelectorAll('.ball-container');
+    const resetBtn = document.getElementById('resetBtn');
+    const fireworks = document.getElementById('fireworks');
+    const bigWin = document.getElementById('bigWin');
+    const bladeBox = document.getElementById('bladeBox');
+
+    containers.forEach(container => {
+      container.addEventListener('click', () => {
+        // Hide all other balls
+        containers.forEach(other => {
+          if (other !== container) {
+            other.classList.add('hide');
+          }
+        });
+
+        // Hide previous celebration
+        fireworks.style.display = 'none';
+        bigWin.style.display = 'none';
+        bladeBox.style.display = 'none';
+
+        const ball = container.querySelector('.ball-img');
+        const message = container.querySelector('.result-message');
+
+        // Reset
+        ball.classList.remove('spinning');
+        message.classList.remove('show', 'winner', 'try-again');
+        message.style.display = 'none';
+
+        // Spin
+        ball.classList.add('spinning');
+
+        setTimeout(() => {
+          ball.classList.remove('spinning');
+
+          const isWinner = Math.random() < 0.5;
+
+          message.textContent = isWinner ? 'Winner!' : 'Try Again';
+          message.classList.add(isWinner ? 'winner' : 'try-again');
+          message.style.display = 'block';
+
+          if (isWinner) {
+            fireworks.style.display = 'block';
+            bigWin.style.display = 'block';
+            bladeBox.style.display = 'block';
+          }
+        }, 2000);
+      });
+    });
+
+    resetBtn.addEventListener('click', () => {
+      containers.forEach(container => {
+        container.classList.remove('hide');
+        const ball = container.querySelector('.ball-img');
+        const message = container.querySelector('.result-message');
+        ball.classList.remove('spinning');
+        message.style.display = 'none';
+      });
+
+      fireworks.style.display = 'none';
+      bigWin.style.display = 'none';
+      bladeBox.style.display = 'none';
+    });
+  </script>
+
+</body>
+</html>
